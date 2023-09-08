@@ -38,8 +38,6 @@ def train_val_splits(data, labels, m: int, n: int, a: int) -> ([np.array] , [np.
     data_lst.append(data[:m, :])
     label_lst.append(labels[:m])
 
-    print(data.shape)
-    print (labels.shape)
 
     # add the a validation sets
     for i in range(a):
@@ -53,7 +51,6 @@ def train_val_splits(data, labels, m: int, n: int, a: int) -> ([np.array] , [np.
 
         print (val_data.shape)
         print (val_labels.shape)
-
 
         # Append the training and validation sets to the respective lists
         data_lst.append(val_data)
@@ -73,7 +70,7 @@ def knn(training_points: np.ndarray, training_labels: np.ndarray, test_points: n
     - k (int): Number of nearest neighbors to consider.
 
     Returns:
-    - predicted_labels (numpy.ndarray): Predicted labels for test points.
+    - Array of errors for each K upto m.
     """
     # Convert labels {5,6} to {-1,1}
     training_labels[training_labels == 5] = -1
@@ -85,14 +82,13 @@ def knn(training_points: np.ndarray, training_labels: np.ndarray, test_points: n
     training_points = training_points.T # Transpose to make it (m, d)
     test_points = test_points.T  # Transpose to make it (n, d)
 
-    print ("points shape", training_points.shape, test_points.shape)
-    print ("labels shape", training_labels.shape, test_labels.shape)
+    #print ("points shape", training_points.shape, test_points.shape)
+    #print ("labels shape", training_labels.shape, test_labels.shape)
 
     # Distances between all test and training points
     distances = np.linalg.norm(training_points[:, :, np.newaxis] - test_points[:, np.newaxis, :], axis=0)
 
     m = len(training_labels)
-    n = len(test_labels)
     errors = np.zeros(m, dtype=float)
 
     # Calculate errors for k = 1, 2, ..., m
@@ -189,9 +185,15 @@ def plot_variance_of_validation_errors(Results):
     plt.legend()
     plt.show()
 
-data, labels = train_val_splits(points, labels, 50, 80, 5)
+data, lab = train_val_splits(points, labels, 50, 10, 5)
 
-res = multi_knn(data, labels)
+#var_data = data
+
+
+
+res = multi_knn(data, lab)
+
+
 
 plot_variance_of_validation_errors(res)
 
